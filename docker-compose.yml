@@ -1,0 +1,55 @@
+version: '3.7'
+services:
+    server:
+        image: netxms-server:latest
+        build:
+            context: ./
+            dockerfile: docker/server/Dockerfile
+            args:
+                TZ: ${TZ}
+                LANG: ${LANG}
+        volumes:
+            - ./config/netxmsd.conf:/etc/netxmsd.conf
+        ports:
+            - "4700-4701"
+        stdin_open: true
+
+    postgres:
+        image: timescaledb/timescaledb:latest
+        build:
+            context: ./
+            dockerfile: docker/postgres/Dockerfile
+            args:
+              TZ: ${TZ}
+              LANG: ${LANG}
+        volumes:
+            - ./data/db:/var/lib/postgresql/data
+        environment:
+            TZ: ${TZ}
+            PGTZ: ${TZ}
+            POSTGRES_USER: netxms
+            POSTGRES_PASSWORD: netxms
+            POSTGRES_DB: netxms
+    agent:
+      image: netxms-agent:latest
+      build:
+          context: ./
+          dockerfile: docker/agent/Dockerfile
+          args:
+              TZ: ${TZ}
+              LANG: ${LANG}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
