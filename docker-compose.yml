@@ -1,55 +1,63 @@
-version: '3.7'
+version: '3.9'
 services:
-    server:
-        image: netxms-server:latest
-        build:
-            context: ./
-            dockerfile: docker/server/Dockerfile
-            args:
-                TZ: ${TZ}
-                LANG: ${LANG}
-        volumes:
-            - ./config/netxmsd.conf:/etc/netxmsd.conf
-        ports:
-            - "4700-4701"
-        stdin_open: true
+  server:
+    hostname: server
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    image: netxms-server:latest
+    build:
+      context: ./
+      dockerfile: docker/server/Dockerfile
+      args:
+        TZ: ${TZ}
+        LOCALE: ${LOCALE}
+    volumes:
+      - ./docker/server/entrypoint.d:/entrypoint.d:ro
+      - ./config/netxmsd.conf:/etc/netxmsd.conf
+    ports:
+      - "4700:4700"
+      - "4701:4701"
+      - "4702:4702"
+      - "4703:4703"
+      - "514:514/udp"
+    stdin_open: true
 
-    postgres:
-        image: timescaledb/timescaledb:latest
-        build:
-            context: ./
-            dockerfile: docker/postgres/Dockerfile
-            args:
-              TZ: ${TZ}
-              LANG: ${LANG}
-        volumes:
-            - ./data/db:/var/lib/postgresql/data
-        environment:
-            TZ: ${TZ}
-            PGTZ: ${TZ}
-            POSTGRES_USER: netxms
-            POSTGRES_PASSWORD: netxms
-            POSTGRES_DB: netxms
-    agent:
-      image: netxms-agent:latest
-      build:
-          context: ./
-          dockerfile: docker/agent/Dockerfile
-          args:
-              TZ: ${TZ}
-              LANG: ${LANG}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  postgres:
+    hostname: postgres
+    restart: unless-stopped
+    image: timescaledb/timescaledb:latest-pg13
+    build:
+      context: ./
+      dockerfile: docker/postgres/Dockerfile
+      args:
+        TZ: ${TZ}
+        LOCALE: ${LOCALE}
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      TZ: ${TZ}
+      PGTZ: ${TZ}
+      POSTGRES_USER: netxms
+      POSTGRES_PASSWORD: netxms
+      POSTGRES_DB: netxms
+  agent:
+    restart: unless-stopped
+    image: netxms-agent:latest
+    build:
+      context: ./
+      dockerfile: docker/agent/Dockerfile
+      args:
+        TZ: ${TZ}
+        LOCALE: ${LOCALE}
+    volumes:
+      - ./docker/agent/entrypoint.d:/entrypoint.d:ro
+      - ./config/nxagentd.conf:/etc/nxagentd.conf
+      - ./config/nxagentd.conf.d:/etc/nxagentd.conf.d/
+  cli:
+    image: nextms-server:latest
+    profiles: ["cli"]
+    command: bash
+    tty: true
+    volumes:
+      - ./config/netxmsd.conf:/etc/netxmsd.conf:ro

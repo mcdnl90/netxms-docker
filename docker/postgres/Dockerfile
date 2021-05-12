@@ -11,5 +11,5 @@ RUN apk add --no-cache ${MUSL_LOCALE_DEPS} \
  && cmake -DLOCALE_PROFILE=OFF -D CMAKE_INSTALL_PREFIX:PATH=/usr . && make && make install \
  && cd .. && rm -r musl-locales-master
 
-ARG LANG="en_US" 
-ENV LANG=${LANG}.UTF-8
+ARG LOCALE="en_US" 
+ENV LANG=${LOCALE}.UTF-8

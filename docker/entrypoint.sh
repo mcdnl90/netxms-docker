@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "\e[32mRunning pre-entrypoint scripts...\e[0m\n"
+echo -e "\e[32mRunning pre-entrypoint scripts...\e[0m"
 if [[ -d "/entrypoint.d" ]]
 then
     /bin/run-parts --verbose --regex '\.sh$' '/entrypoint.d'
