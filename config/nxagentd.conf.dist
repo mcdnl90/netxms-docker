@@ -1,14 +1,7 @@
 # Agent’s log file. To write log to syslog (or Event Log on Windows), use {syslog} as file name.
 LogFile=/dev/stdout
 
-# List of management servers, which have full access to agent. Hosts listed in this group can upload files to agent and initiate agent upgrade, as well as perform any task allowed for hosts listed in Servers and ControlServers. Both IP addresses and DNS names can be used. Multiple servers can be specified in one line, separated by commas. If this parameter is used more than once, servers listed in all occurrences will have access to agent.
-MasterServers=server
 
-# A list of management servers, which can execute actions on agent and change agent’s config. Hosts listed in this parameter also have read access to the agent. Both IP addresses and DNS names can be used. Multiple servers can be specified in one line, separated by commas. If this parameter is used more than once, servers listed in all occurrences will have access to agent.
-#ControlServers=
-
-# A list of management servers, which have read access to this agent. Both IP addresses and DNS names can be used. Multiple servers can be specified in one line, separated by commas. If this parameter is used more than once, servers listed in all occurrences will have access to agent.
-#Servers=
 
 # Define action, which can be later executed by management server. Parameters to the action can be provided from the server. They can be accessed as $1, $2… variables. On Windows platform system process execution API’s CreateProcess() is used to run the command, it will search in PATH, but the command should be with file extension, e.g. command.exe.
 #Action=
@@ -22,8 +15,10 @@ MasterServers=server
 # Enable (yes) or disable (no) automatic start of User Support Application (Windows only). If enabled, Agent will check on it’s start, if User Support Application is running in each user session and will start it if needed. For this to work, Agent should be started under local SYSTEM user.
 #AutoStartUserAgent=
 
+
 # Enable (yes) or disable (no) log writer as separate background thread. Has no effect if logging is done through syslog or Windows Event Log.
 #BackgroundLogWriter=
+
 
 # Code page used by NetXMS agent. Has no effect on Windows or if agent was compiled without iconv support.
 #CodePage=
@@ -31,6 +26,8 @@ MasterServers=server
 # Folder containing additional configuration files. This parameter can only be specified in master configuration file and will be ignored if found in additional configuration files or configuration policy.
 #ConfigIncludeDir=
 
+# A list of management servers, which can execute actions on agent and change agent’s config. Hosts listed in this parameter also have read access to the agent. Both IP addresses and DNS names can be used. Multiple servers can be specified in one line, separated by commas. If this parameter is used more than once, servers listed in all occurrences will have access to agent.
+#ControlServers=
 
 # Directory where additional agent files (log file monitoring policy files, agent configuration policy files, user agent configuration, local agent database, etc) will be stored. This parameter can only be specified in master configuration file and will be ignored if found in additional configuration files or configuration policy.
 #DataDirectory=
@@ -160,6 +157,9 @@ MasterServers=server
 # Expressed in milliseconds. If a query to agent’s local database or DBQuery subagent query takes longer then this time, the query will be logged to agent log file.
 #LongRunningQueryThreshold=
 
+# List of management servers, which have full access to agent. Hosts listed in this group can upload files to agent and initiate agent upgrade, as well as perform any task allowed for hosts listed in Servers and ControlServers. Both IP addresses and DNS names can be used. Multiple servers can be specified in one line, separated by commas. If this parameter is used more than once, servers listed in all occurrences will have access to agent.
+#MasterServers=
+
 # Maximum log size, in bytes. When log file reaches this limit, log rotation occurs. Use 0 to disable log rotation. This parameter supports (K, M, G, T suffixes).
 #MaxLogSize=
 
@@ -180,6 +180,10 @@ MasterServers=server
 
 # IP address or host name of NetXMS server for tunnel agent connection. Several such parameters can be present, in this case agent will establish tunnel connection to more then one server.
 #ServerConnection=
+
+# A list of management servers, which have read access to this agent. Both IP addresses and DNS names can be used. Multiple servers can be specified in one line, separated by commas. If this parameter is used more than once, servers listed in all occurrences will have access to agent.
+#Servers=
+
 # Communication session idle timeout in seconds. If an agent will not receive any command from peer within the specified timeout, session will be closed.
 #SessionIdleTimeout=
 

@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
-    image: netxms-server:latest
+    image: netxms-docker/server:latest
     build:
       context: ./
       dockerfile: docker/server/Dockerfile
@@ -15,18 +15,20 @@ services:
     volumes:
       - ./docker/server/entrypoint.d:/entrypoint.d:ro
       - ./config/netxmsd.conf:/etc/netxmsd.conf
+      - ./config/config_ap:/var/lib/netxms/config_ap
+      - ./config/extra-mibs:/mnt/extra-mibs
     ports:
-      - "4700:4700"
       - "4701:4701"
-      - "4702:4702"
       - "4703:4703"
+      - "4747:4747"
       - "514:514/udp"
+      - "162:162/udp"
     stdin_open: true
 
   postgres:
     hostname: postgres
     restart: unless-stopped
-    image: timescaledb/timescaledb:latest-pg13
+    image: timescale/timescaledb:latest-pg13
     build:
       context: ./
       dockerfile: docker/postgres/Dockerfile
@@ -42,6 +44,7 @@ services:
       POSTGRES_PASSWORD: netxms
       POSTGRES_DB: netxms
   agent:
+    hostname: agent
     restart: unless-stopped
     image: netxms-agent:latest
     build:
@@ -50,14 +53,22 @@ services:
       args:
         TZ: ${TZ}
         LOCALE: ${LOCALE}
+    ports:
+      - "4700:4700"
     volumes:
       - ./docker/agent/entrypoint.d:/entrypoint.d:ro
       - ./config/nxagentd.conf:/etc/nxagentd.conf
       - ./config/nxagentd.conf.d:/etc/nxagentd.conf.d/
   cli:
-    image: nextms-server:latest
+    hostname: cli
+    image: netxms-docker/server:latest
     profiles: ["cli"]
     command: bash
     tty: true
+    environment:
+      NO_ENTRYPOINTD: 1
     volumes:
       - ./config/netxmsd.conf:/etc/netxmsd.conf:ro
+      - ./config/config_ap:/var/lib/netxms/config_ap
+      - ./config/extra-mibs:/mnt/extra-mibs
+ 

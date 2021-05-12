@@ -36,4 +36,4 @@ FROM install_entrypoint AS expose_ports
 EXPOSE 4700
 
 FROM expose_ports AS netxms-agent
-CMD ["/usr/bin/netxms-agentd"]
+CMD ["/usr/bin/nxagentd", "-c", "/etc/nxagentd.conf"]

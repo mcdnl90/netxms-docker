@@ -1,17 +1,14 @@
 #!/bin/bash
 
-echo -n "database initialization..."
+echo -n "database initialization... "
 
-/usr/bin/nxdbmgr -q check-data-tables #2>&1 > /dev/null
+/usr/bin/nxdbmgr -q init tsdb 2>&1 > /tmp/db-init.log
 
-if [ "$?" == "5" ]
+if [ "$?" == "0" ]
 then
-    /usr/bin/nxdbmgr -q init tsdb #2>&1 > /dev/null
     echo "done"
 else
     echo "not needed"
 fi
 
-#echo "database upgrade: "
-#/usr/bin/nxdbmgr upgrade
-
+echo "log can be found on /tmp/db-init.log"

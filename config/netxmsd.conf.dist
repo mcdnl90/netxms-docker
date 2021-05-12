@@ -1,5 +1,5 @@
 # Code page used by NetXMS server. Has no effect on Windows or if server was compiled without iconv support.
-CodePage=UTF-8
+#CodePage=
 
 # Interface address which should be used by server to listen for incoming connections. Use value 0.0.0.0 or * to use all available interfaces.
 #ListenAddress=
