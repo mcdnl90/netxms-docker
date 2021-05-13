@@ -10,12 +10,16 @@ RUN apt-get update  -qq \
  && apt-get upgrade -qq -y \
  && apt-get install -qq -y --no-install-recommends \
          tzdata curl gnupg2 ca-certificates lsb-release apt-transport-https unzip git \
-         netcat htop openssl jq zip strace nano less gosu gettext-base iputils-ping locales \
- && locale-gen --no-purge $LOCALE.UTF-8 \
- && localedef -i $LOCALE -c -f UTF-8 -A /usr/share/locale/locale.alias $LOCALE.UTF-8 
+         netcat htop openssl jq zip strace nano less gosu gettext-base iputils-ping locales software-properties-common \
+ && add-apt-repository contrib \
+ && add-apt-repository non-free \ 
+ && apt-get install -qq -y --no-install-recommends \
+         uuid \
+ && locale-gen --no-purge ${LOCALE}.UTF-8 \
+ && localedef -i ${LOCALE} -c -f UTF-8 -A /usr/share/locale/locale.alias ${LOCALE}.UTF-8 
 
-ENV LANG=$LOCALE.UTF-8 \
-    LC_ALL=$LOCALE.UTF-8
+ENV LANG=${LOCALE}.UTF-8 \
+    LC_ALL=${LOCALE}.UTF-8
 
 FROM base AS install
 ADD http://packages.netxms.org/netxms-release-latest.deb /tmp/netxms-release-latest.deb 

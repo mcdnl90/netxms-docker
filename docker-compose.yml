@@ -1,7 +1,8 @@
 version: '3.9'
 services:
   server:
-    hostname: server
+    hostname: ${NX_SERVER_NAME}
+    domainname: ${DOMAIN} 
     restart: unless-stopped
     depends_on:
       - postgres
@@ -26,7 +27,8 @@ services:
     stdin_open: true
 
   postgres:
-    hostname: postgres
+    hostname: ${NX_POSTGRES_NAME}
+    domainname: ${DOMAIN}
     restart: unless-stopped
     image: timescale/timescaledb:latest-pg13
     build:
@@ -44,7 +46,8 @@ services:
       POSTGRES_PASSWORD: netxms
       POSTGRES_DB: netxms
   agent:
-    hostname: agent
+    #hostname: agent
+    domainname: ${DOMAIN}
     restart: unless-stopped
     image: netxms-agent:latest
     build:
@@ -53,14 +56,17 @@ services:
       args:
         TZ: ${TZ}
         LOCALE: ${LOCALE}
+    environment:
+        NX_AGENTD_NAME_PREFIX: ${NX_AGENTD_NAME_PREFIX}
     ports:
       - "4700:4700"
     volumes:
       - ./docker/agent/entrypoint.d:/entrypoint.d:ro
       - ./config/nxagentd.conf:/etc/nxagentd.conf
-      - ./config/nxagentd.conf.d:/etc/nxagentd.conf.d/
+      - ./config/nxagentd.conf.d:/tmp/nxagentd.conf.d
   cli:
     hostname: cli
+    domainname: ${DOMAIN}
     image: netxms-docker/server:latest
     profiles: ["cli"]
     command: bash

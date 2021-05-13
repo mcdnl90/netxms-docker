@@ -1,2 +1,7 @@
 data/**
 .env
+config/netxmsd.conf
+config/nxagentd.conf
+
+# Remove this line if you want to keep versions of the MIBs
+config/extra-mibs/*.txt
